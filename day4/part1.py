@@ -46,4 +46,4 @@ for position in positions:
     print(f"Start: ({start_row}, {start_col}), Direction: ({dr}, {dc})")
 
 
-print("anzahl an 'XMAS' found is ", len(positions))
+print("amount of 'XMAS' found is ", len(positions))
