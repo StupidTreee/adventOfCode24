@@ -1,4 +1,3 @@
-import numpy as np
 from itertools import product
 
 with open("data.txt", "r") as data:
@@ -8,32 +7,42 @@ linesCount = len(lines)
 charCount = len(lines[0])
 matrix = [[char for char in line.strip()] for line in lines]
 
-for line in matrix:
+for line in matrix:         
     print(line)
 
-def valid_indexes(lst, row, col):
+def valid_indexes(matrix, row, col):
     """Check if the given row and column are within bounds."""
-    return 0 <= row < len(lst) and 0 <= col < len(lst[0])
+    return 0 <= row < len(matrix) and 0 <= col < len(matrix[0])
 
-def find_word(lst, word, row, col, dr, dc):
+def find_word(matrix, word, row, col, dr, dc):
     """Check if a word exists starting at (row, col) in the direction (dr, dc)."""
-    for i in range(len(word)):
+    for i in range(len(word)-2):
         r, c = row + dr * i, col + dc * i
-        if not valid_indexes(lst, r, c) or lst[r][c] != word[i]:
+        if not valid_indexes(matrix, r, c) or matrix[r][c] != word[1]:
             return False
     return True
 
-def find_all_occurrences(lst, word):
+def find_X_MAS(matrix, word, row, col, directions):
+    # Check if a word exists in a X Shape starting at (row, col) 
+    for dir in directions:
+        for i in range(len(word)):
+            r, c = row + dir[0] * (-i), col + dir[1] * (-i)
+            if not valid_indexes(matrix, dir[0], dir[1]) or matrix[r][c] != word[i]:
+                return False
+        return True
+
+def find_all_occurrences(matrix, word):
     """Find all occurrences of a word in the matrix."""
-    directions = list(product([-1, 0, 1], repeat=2)) 
-    directions.remove((0, 0))
+    directions = list(product([-1, 1], repeat=2)) 
+    #directions.remove((0, 0))
     found_positions = []
 
-    for i in range(len(lst)):
-        for j in range(len(lst[0])):
+    for i in range(len(matrix)):
+        for j in range(len(matrix[0])):
             for dr, dc in directions:
-                if find_word(lst, word, i, j, dr, dc):
-                    found_positions.append((i, j, dr, dc))
+                if (matrix[i][j] == 'A'):
+                    if find_X_MAS(matrix, word, i, j, directions):
+                        found_positions.append((i, j, dr, dc))
 
     return found_positions
 
