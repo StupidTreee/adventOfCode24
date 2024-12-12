@@ -1,3 +1,4 @@
+import functools
 # parse the input
 with open('data.txt') as data:
     rules = []  # rules in a 2d Array
@@ -9,7 +10,7 @@ with open('data.txt') as data:
         line = line.strip()
         if line == "":
             break  
-        rules.append(line.split('|')) # parse string to int  
+        rules.append(line.split('|'))
     
     print("Rules:", rules)
 
@@ -32,8 +33,23 @@ for update in updates:
         correct_order.append(update)
 
 
-num = [] # array for middle numbers
-for list in correct_order:
-    num.append(int(list[len(list)//2]))
+def compare(x, y):
+    # Iterate over rules
+    for rule in rules:
+        if rule[0] == x and rule[1] == y:
+            return -1  # x should come before y
+        if rule[0] == y and rule[1] == x:
+            return 1  # y should come before x
+    return 0  # No specific order
 
-print("sum of middle number in correct lists: ", sum(num))
+
+for update in incorrect_order:
+    update.sort(key=functools.cmp_to_key(compare)) 
+
+        
+
+num = [] # array for middle numbers
+for list in incorrect_order:
+    num.append(int(list[len(list)//2])) # get element and parse to int
+
+print("sum of middle number in incorrect lists: ", sum(num))
